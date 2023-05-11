@@ -5,7 +5,7 @@ const middleware = require('../middleware/index')
 router.post('/login', controller.login)
 router.post('/register', controller.register)
 router.post(
-  '/update',
+  '/update/:userId',
   middleware.stripToken,
   middleware.verifyToken,
   controller.updatePassword

@@ -79,7 +79,7 @@ const updatePassword = async (req, res, next) => {
     }
 
     const { currentPassword, newPassword } = req.body;
-    const userId = req.user.userId;
+    const userId = req.params.userId;
 
     // Check if user exists
     const user = await User.findByPk(userId);

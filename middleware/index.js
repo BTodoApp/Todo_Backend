@@ -28,7 +28,6 @@ const verifyToken = (req, res, next) => {
     }
   
     const token = authHeader.split(' ')[1];
-    console.log("BRYNNER: " ,token)
   
     try {
       const payload = jwt.verify(token, secretKey);

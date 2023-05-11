@@ -1,4 +1,4 @@
-const { Board } = require('../models');
+const { Board, List } = require('../models');
 
 const getBoards = async (req, res) => {
   try {
@@ -17,6 +17,19 @@ const getBoardById = async (req, res) => {
     throw error;
   }
 };
+
+const getBoardsLists = async (req, res) => {
+  try {
+    const boards = await Board.findAll({
+      include: [{ model: List }],
+    });
+    res.json(boards);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 const createBoard = async (req, res) => {
   try {
@@ -63,4 +76,5 @@ module.exports = {
   createBoard,
   updateBoard,
   deleteBoard,
+  getBoardsLists
 };

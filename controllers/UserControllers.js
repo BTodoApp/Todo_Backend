@@ -18,24 +18,28 @@ const GetUserByPk = async (req, res) => {
     }
 }
 
-const CreateUser = async (req, res) => {
+const CreateUser = async ({ email, hashedPassword, name }) => {
     try {
-        let userId = parseInt(req.params.user_id);
-        let userBody = {
-            userId,
-            ...req.body,
-        };
-        let user = await User.create(userBody);
-        // Create a new user and assign a board to them
-        const board = await Board.create({ title: 'Default Board', userId: user.id });
-        await List.create({ name: 'To Do', order: 1, boardId: board.id });
-        await List.create({ name: 'Doing', order: 2, boardId: board.id });
-        await List.create({ name: 'Done', order: 3, boardId: board.id });
-        res.send(user)
+      let user = await User.create({ email, password: hashedPassword, name });
+  
+      const board = await Board.create({ title: 'Default Board', userId: user.id });
+  
+      await List.bulkCreate([
+        { name: 'To Do', order: 1, boardId: board.id },
+        { name: 'Doing', order: 2, boardId: board.id },
+        { name: 'Done', order: 3, boardId: board.id },
+      ]);
+  
+      return user;
     } catch (error) {
-        throw error
+      console.log(error);
+      throw error;
     }
-}
+  }
+  
+
+
+
 
 const UpdateUser = async (req, res) => {
     try{

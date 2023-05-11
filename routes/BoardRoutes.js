@@ -4,6 +4,7 @@ const middleware = require('../middleware')
 
 Router.get('/', controller.getBoards)
 Router.post('/', controller.createBoard)
+Router.get('/lists', controller.getBoardsLists)
 Router.get('/:boardId', controller.getBoardById)
 Router.put('/edit/:boardId', middleware.stripToken, middleware.verifyToken, controller.updateBoard)
 Router.delete('/:boardId', controller.deleteBoard)

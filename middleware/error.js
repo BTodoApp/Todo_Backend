@@ -1,4 +1,4 @@
-const errorHandler = (err, req, res, next) => {
+const ErrorHandler = (err, req, res, next) => {
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
   
@@ -7,9 +7,7 @@ const errorHandler = (err, req, res, next) => {
   
     res.status(statusCode).json({ message });
   };
-  
-  module.exports = errorHandler;
 
   module.exports = {
-    errorHandler
+    ErrorHandler
   }

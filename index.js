@@ -9,6 +9,7 @@ const CardRouter = require('./routes/CardRoutes')
 const ListRouter = require('./routes/ListRoutes')
 const BoardRouter = require('./routes/BoardRoutes')
 const UserRouter = require('./routes/UserRoutes')
+const bodyParser = require('body-parser');
 const { seed } = require('./seed')
 require('dotenv').config();
 seed()
@@ -17,6 +18,7 @@ const port = process.env.PORT || 3000;
 
 app.use(cors())
 app.use(express.json())
+app.use(bodyParser.json());
 
 
 // Define your API routes

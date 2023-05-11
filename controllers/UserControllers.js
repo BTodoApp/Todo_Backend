@@ -26,6 +26,11 @@ const CreateUser = async (req, res) => {
             ...req.body,
         };
         let user = await User.create(userBody);
+        // Create a new user and assign a board to them
+        const board = await Board.create({ title: 'Default Board', userId: user.id });
+        await List.create({ name: 'To Do', order: 1, boardId: board.id });
+        await List.create({ name: 'Doing', order: 2, boardId: board.id });
+        await List.create({ name: 'Done', order: 3, boardId: board.id });
         res.send(user)
     } catch (error) {
         throw error

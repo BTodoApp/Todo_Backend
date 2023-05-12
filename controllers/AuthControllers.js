@@ -8,8 +8,6 @@ dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
 const SALT_ROUNDS = process.env.SALT_ROUNDS
 const salt = bcrypt.genSaltSync(Number(SALT_ROUNDS));
-console.log(process.env.SALT_ROUNDS)
-
 const { ErrorHandler } = require('../utils/errorHandler');
 
 const login = async (req, res, next) => {
@@ -24,13 +22,13 @@ const login = async (req, res, next) => {
     // Check if user with provided email exists
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      throw new ErrorHandler(401, 'Invalid email or password');
+      throw new ErrorHandler(401, 'Invalid email');
     }
 
     // Check if password is correct
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new ErrorHandler(401, 'Invalid email or password');
+      throw new ErrorHandler(401, 'Invalid password');
     }
 
     // Generate JWT token
@@ -63,13 +61,20 @@ const register = async (req, res, next) => {
     // Create new user
     const newUser = await CreateUser({ email, hashedPassword, name });
 
-    res.status(201).json({ message: 'User created' });
+    res.status(201).json({ 
+      message: 'User created',
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        boards: newUser.boards,
+      },
+    });
+    
   } catch (error) {
     next(error);
   }
 };
-
-
 
 const updatePassword = async (req, res, next) => {
   try {

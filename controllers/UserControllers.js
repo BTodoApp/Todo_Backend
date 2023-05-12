@@ -19,26 +19,32 @@ const GetUserByPk = async (req, res) => {
 }
 
 const CreateUser = async ({ email, hashedPassword, name }) => {
-    try {
-      let user = await User.create({ email, password: hashedPassword, name });
-  
-      const board = await Board.create({ title: 'Default Board', userId: user.id });
-  
-      await List.bulkCreate([
-        { name: 'To Do', order: 1, boardId: board.id },
-        { name: 'Doing', order: 2, boardId: board.id },
-        { name: 'Done', order: 3, boardId: board.id },
-      ]);
-  
-      return user;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  try {
+    const user = await User.create({ email, password: hashedPassword, name });
+
+    const board = await Board.create({ title: 'Default Board', userId: user.id });
+
+    const lists = await List.bulkCreate([
+      { name: 'To Do', order: 1, boardId: board.id },
+      { name: 'Doing', order: 2, boardId: board.id },
+      { name: 'Done', order: 3, boardId: board.id },
+    ]);
+
+    await board.setLists(lists);
+
+    const userWithBoards = await User.findByPk(user.id, {
+      include: {
+        model: Board,
+        include: List,
+      },
+    });
+
+    return userWithBoards;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
-  
-
-
+};
 
 
 const UpdateUser = async (req, res) => {

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 const app = require('../index');
 const { User, Board, List } = require('../models/index');
 const dotenv = require('dotenv');

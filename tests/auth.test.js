@@ -57,7 +57,7 @@ describe('Auth Endpoints', () => {
   describe('POST /auth/login', () => {
     let authToken;
   
-    beforeEach(async () => {
+    beforeAll(async () => {
       const registering = await request(app)
         .post('/auth/register')
         .send({
@@ -67,7 +67,7 @@ describe('Auth Endpoints', () => {
         });
     });
   
-    afterEach(async () => {
+    afterAll(async () => {
         await User.destroy({ where: { email: 'testuser3@example.com' } });
       });      
   
@@ -97,7 +97,7 @@ describe('Auth Endpoints', () => {
   describe('POST /auth/update/:userId', () => {
     let authToken;
   
-    beforeEach(async () => {
+    beforeAll(async () => {
       // Register a user and get an auth token
       const password = 'testpassword';
       const registering = await request(app)
@@ -116,16 +116,18 @@ describe('Auth Endpoints', () => {
       authToken = res.body.token;
     });
   
-    afterEach(async () => {
+    afterAll(async () => {
       await User.destroy({ where: { email: 'testuser4@example.com' } });
     });
   
     it('should update password for a valid user', async () => {
       const currentPassword = 'testpassword';
       const newPassword = 'newtestpassword';
+      const user = await User.findOne({ where: { email: 'testuser4@example.com' } });
+      const userID = user ? user.id : null;
   
       const res = await request(app)
-        .post('/auth/update/2')
+        .post(`/auth/update/${userID}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           currentPassword: currentPassword,

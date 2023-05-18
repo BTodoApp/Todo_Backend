@@ -1,11 +1,9 @@
 const request = require('supertest');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const app = require('../index');
 const { User, Board, List } = require('../models/index');
 const dotenv = require('dotenv');
 dotenv.config();
-const SECRET_KEY = process.env.SECRET_KEY;
 const SALT_ROUNDS = process.env.SALT_ROUNDS
 const salt = bcrypt.genSaltSync(Number(SALT_ROUNDS));
 
@@ -75,12 +73,12 @@ describe('Auth Endpoints', () => {
         const res = await request(app)
           .post('/auth/login')
           .send({
-            email: 'testuser3@example.com', // change the email to match the created user
+            email: 'testuser3@example.com',
             password: 'testpassword'
           });
         expect(res.statusCode).toEqual(200);
         expect(res.body.token).toBeDefined();
-        authToken = res.body.token; // save the token for later use in other tests
+        authToken = res.body.token;
       });
   
     it('should return 401 when given an invalid email or password', async () => {

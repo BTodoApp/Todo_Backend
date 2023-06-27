@@ -1,4 +1,5 @@
-const { User, Board, List, Card } = require('../models')
+const { User, Board, List, Card } = require('../models/index')
+const {createBoard} = require("./BoardControllers")
 
 const GetUsers = async (req, res) => {
     try {
@@ -21,17 +22,7 @@ const GetUserByPk = async (req, res) => {
 const CreateUser = async ({ email, hashedPassword, name }) => {
   try {
     const user = await User.create({ email, password: hashedPassword, name });
-
-    const board = await Board.create({ title: 'Default Board', userId: user.id });
-
-    const lists = await List.bulkCreate([
-      { name: 'To Do', order: 1, boardId: board.id },
-      { name: 'Doing', order: 2, boardId: board.id },
-      { name: 'Done', order: 3, boardId: board.id },
-    ]);
-
-    await board.setLists(lists);
-
+    await createBoard({ title: 'Default Board', userId: user.id });
     const userWithBoards = await User.findByPk(user.id, {
       include: {
         model: Board,

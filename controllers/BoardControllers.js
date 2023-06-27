@@ -30,16 +30,24 @@ const getBoardsLists = async (req, res) => {
   }
 };
 
-
-const createBoard = async (req, res) => {
+const createBoard = async (boardData) => {
   try {
-    let boardId = parseInt(req.params.boardId);
-    let boardBody = {
-      boardId,
-      ...req.body,
-    };
-    let board = await Board.create(boardBody);
-    res.send(board);
+    const { title, userId } = boardData;
+    
+    // Create the board
+    const board = await Board.create({ title, userId });
+
+    // Create default lists for the board
+    const lists = await List.bulkCreate([
+      { name: 'To Do', order: 1, boardId: board.id },
+      { name: 'Doing', order: 2, boardId: board.id },
+      { name: 'Done', order: 3, boardId: board.id },
+    ]);
+
+    // Associate the lists with the board
+    await board.setLists(lists);
+
+    return board;
   } catch (error) {
     throw error;
   }

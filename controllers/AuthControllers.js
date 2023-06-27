@@ -56,7 +56,12 @@ const register = async (req, res, next) => {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await new Promise((resolve, reject) => {
+      bcrypt.hash(password, salt, null, (err, hash) => {
+        if (err) reject(err);
+        resolve(hash);
+      });
+    });
 
     // Create new user
     const newUser = await CreateUser({ email, hashedPassword, name });
@@ -70,6 +75,8 @@ const register = async (req, res, next) => {
         boards: newUser.boards,
       },
     });
+
+    return newUser
     
   } catch (error) {
     next(error);
@@ -98,8 +105,13 @@ const updatePassword = async (req, res, next) => {
       throw new ErrorHandler(401, 'Invalid password');
     }
 
-    // Hash new password
-    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+    // Hash password
+    const hashedNewPassword = await new Promise((resolve, reject) => {
+      bcrypt.hash(newPassword, salt, null, (err, hash) => {
+        if (err) reject(err);
+        resolve(hash);
+      });
+    });
 
     // Update user's password
     user.password = hashedNewPassword;

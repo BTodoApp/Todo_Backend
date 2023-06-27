@@ -119,8 +119,9 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
-const checkSession = (req, res) => {
-  res.status(200).json({ message: 'Session is valid' });
-};
+  const checkSession = (req, res) => {
+    const { payload } = res.locals
+    res.send(payload)
+  };
 
 module.exports = { login, register, updatePassword, checkSession };

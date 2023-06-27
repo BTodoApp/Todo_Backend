@@ -78,11 +78,22 @@ const deleteBoard = async (req, res) => {
   }
 };
 
+
+const getSpecificUserBoards = async (req, res) => {
+  try {
+    const userBoard = await Board.findAll({ where: { userId: req.params.userId }})
+    res.json(userBoard)
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   getBoards,
   getBoardById,
   createBoard,
   updateBoard,
   deleteBoard,
-  getBoardsLists
+  getBoardsLists,
+  getSpecificUserBoards
 };

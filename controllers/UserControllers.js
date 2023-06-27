@@ -80,7 +80,6 @@ const GetAllUserData = async (req, res) => {
       }
 }
 
-
 module.exports = {
     GetUsers,
     GetUserByPk,

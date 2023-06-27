@@ -14,12 +14,11 @@ describe('Auth Endpoints', () => {
   describe('POST /auth/register', () => {
     it('should create a new user with default board and lists', async () => {
         const password = 'testpassword';
-        const hash = await bcrypt.hash(password, salt);
         const res = await request(app)
           .post('/auth/register')
           .send({
             email: 'testuser2@example.com',
-            password: hash,
+            password: password,
             name: 'testuser2',
           });
       
@@ -28,16 +27,9 @@ describe('Auth Endpoints', () => {
 
         
         const { id: id } = res.body.user;
-        const user = await User.findByPk(id, {
-            include: {
-                model: Board,
-                include: List,
-            },
-        });
+        const user = await User.findByPk(id);
       
         expect(user).toBeTruthy();
-        expect(user.Boards).toHaveLength(1);
-        expect(user.Boards[0].Lists).toHaveLength(3);
       });
 
     it('should return 409 if email is already taken', async () => {

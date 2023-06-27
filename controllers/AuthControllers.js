@@ -12,31 +12,27 @@ const { ErrorHandler } = require('../utils/errorHandler');
 
 const login = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new ErrorHandler(422, 'Validation error', errors.array());
-    }
 
-    const { email, password } = req.body;
+    const {email, password} = req.body
 
-    // Check if user with provided email exists
-    const user = await User.findOne({ where: { email: email } });
-    if (!user) {
-      throw new ErrorHandler(401, 'Invalid email');
-    }
+    const user = await User.findOne({
+      where: {email: email},
+      raw: true
+    })
 
-    // Check if password is correct
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      throw new ErrorHandler(401, 'Invalid password');
-    }
+    if (user && await bcrypt.compare(password, user.password, function (err, result) {
+      let payload = {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
-
-    res.status(200).json({ token });
+      let token = jwt.sign(payload, SECRET_KEY)
+      return res.send({ user: payload, token})
+    }))
+    res.status(401).send({ status: 'Error', message: 'Incorrect Password'})
   } catch (error) {
-    next(error);
+    res.status(500).json(error)
   }
 };
 

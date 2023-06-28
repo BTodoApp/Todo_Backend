@@ -11,15 +11,16 @@ seed()
 
 const port = process.env.PORT || 3000;
 
+const corsOptions ={
+  origin:'http://localhost:3000', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200
+}
+
 const app = express();
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(bodyParser.json());
-
-app.all('*', (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://localhost:3000");
-  next();
-});
 
 // Define your API routes
 app.get('/', (req, res) => res.json({ message: 'Server Works' }))

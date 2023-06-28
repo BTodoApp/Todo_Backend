@@ -20,8 +20,9 @@ const getBoardById = async (req, res) => {
 
 const getBoardsLists = async (req, res) => {
   try {
-    const boards = await Board.findAll({
-      include: [{ model: List }],
+    const boards = await Board.findOne({
+      where: {id: req.params.boardId},
+      include: [{ model: List }]
     });
     res.json(boards);
   } catch (error) {

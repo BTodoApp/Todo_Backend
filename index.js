@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const middleware = require('./middleware/index');
 const { User, Card, List, Board } = require('./models/index')
 const cors = require('cors')
@@ -12,9 +11,15 @@ seed()
 
 const port = process.env.PORT || 3000;
 
+const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.json());
+
+app.all('*', (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://localhost:3000");
+  next();
+});
 
 // Define your API routes
 app.get('/', (req, res) => res.json({ message: 'Server Works' }))
@@ -39,5 +44,5 @@ app.get('/data', async (req, res) => {
 // Start the server
 
 module.exports = app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at https://todobackend-production-44b4.up.railway.app${port}`);
 });

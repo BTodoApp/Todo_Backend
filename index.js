@@ -5,10 +5,6 @@ const { User, Card, List, Board } = require('./models/index')
 const cors = require('cors')
 const AuthRouter = require('./routes/AuthRouter')
 const AppRouter = require('./routes/AppRoutes')
-const CardRouter = require('./routes/CardRoutes')
-const ListRouter = require('./routes/ListRoutes')
-const BoardRouter = require('./routes/BoardRoutes')
-const UserRouter = require('./routes/UserRoutes')
 const bodyParser = require('body-parser');
 const { seed } = require('./seed')
 require('dotenv').config();
@@ -19,13 +15,6 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.json());
-
-if(process.env.NODE_ENV === 'production'){
-  const path  =  require('path');
-  app.get('/*',(req,res)=>{
-      res.sendfile(path.resolve(__dirname,'client','build','index.html'))
-  })
-}
 
 // Define your API routes
 app.get('/', (req, res) => res.json({ message: 'Server Works' }))

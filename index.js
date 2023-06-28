@@ -1,7 +1,6 @@
 const express = require('express');
 const middleware = require('./middleware/index');
 const { User, Card, List, Board } = require('./models/index')
-const cors = require('cors')
 const AuthRouter = require('./routes/AuthRouter')
 const AppRouter = require('./routes/AppRoutes')
 const bodyParser = require('body-parser');
@@ -11,12 +10,7 @@ seed()
 
 const port = process.env.PORT || 3000;
 
-const corsOptions ={
-  origin:'http://127.0.0.1:3000'
-}
-
 const app = express();
-app.use(cors(corsOptions))
 app.use(express.json())
 app.use(bodyParser.json());
 
